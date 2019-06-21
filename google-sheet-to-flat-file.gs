@@ -13,12 +13,20 @@ function onOpen() {
 function saveAsFile(sep, ext) {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheets = ss.getSheets();
-  // create a folder from the name of the spreadsheet
-  var folder = DriveApp.createFolder("Flat File Exports - " + new Date().getMonth() + "/" + new Date().getDay() + "/" + new Date().getYear());
+  var fileTime = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'YYYYMMDD hh.mm.ss');
+  var folderDate = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'YYYYMMDD');
+  var folder = DriveApp.getFoldersByName("Flat File Exports - " + folderDate);
+  if (folder.hasNext()) {
+    folder = folder.next();
+  }
+  else {
+    // create a folder from the name of the spreadsheet
+    folder = DriveApp.createFolder("Flat File Exports - " + folderDate);
+  }
   for (var i = 0 ; i < sheets.length ; i++) {
     var sheet = sheets[i];
     // append extension to the sheet name
-    var fileName = sheet.getName() + ext;
+    var fileName = sheet.getName() + " " + fileTime + ext;
     // convert all available sheet data to txt format
     var flatFile = convertRangeToFile_(fileName, sheet, sep);
     // create a file in the Docs List with the given name and the data
@@ -46,7 +54,7 @@ function convertRangeToFile_(fileName, sheet, sep) {
 
         // join each row's columns
         // add a carriage return to end of each row, except for the last one
-        if (row < data.length-1) {
+        if (row < data.length) {
           content += data[row].join(sep) + "\r\n";
         }
         else {
