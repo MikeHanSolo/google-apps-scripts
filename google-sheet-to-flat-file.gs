@@ -14,7 +14,7 @@ function saveAsFile(sep, ext) {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheets = ss.getSheets();
   // create a folder from the name of the spreadsheet
-  var folder = DriveApp.createFolder("Flat File Exports - " + new Date().getYear() + new Date().getMonth() + new Date().getDay());
+  var folder = DriveApp.createFolder("Flat File Exports - " + new Date().getMonth() + "/" + new Date().getDay() + "/" + new Date().getYear());
   for (var i = 0 ; i < sheets.length ; i++) {
     var sheet = sheets[i];
     // append extension to the sheet name
